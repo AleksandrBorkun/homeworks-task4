@@ -6,6 +6,12 @@ import epam.homework.task4.date.FullDate;
 
 public class Note implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	FullDate date = new FullDate();
 	private String note;
 

@@ -7,6 +7,12 @@ import java.util.List;
 
 public class NoteBook implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	Note newNote;
 	List<Note> notes;
 
