@@ -25,17 +25,21 @@ public class SaveAddsToNoteBook implements Command {
 		ServiceFactory service = ServiceFactory.getInstance();
 		NoteBookService nbService = service.getNoteBookService();
 		try {
-			nbService.saveNoteBookToFile(filePath);
-			response.setErrorStatus(false);
-			response.setResultMessage("Notes is saved to file: \'" + filePath + "\'");
-
+			if (nbService.saveNoteBookToFile(filePath)) {
+				response.setErrorStatus(false);
+				response.setResultMessage("Notes is saved to file: \'" + filePath + "\'");
+				return response;
+			} else {
+				response.setErrorStatus(true);
+				response.setErrorMessage("OOooops.. I think that you didn't write a file path");
+				return response;
+			}
 		} catch (ServiceException e) {
 			response.setErrorStatus(true);
-			response.setErrorMessage("OOooops.. I think that you didn't write a file path");
+			response.setErrorMessage(e.getMessage());
 			return response;
 		}
 
-		return response;
 	}
 
 }

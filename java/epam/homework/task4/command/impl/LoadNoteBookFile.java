@@ -34,14 +34,16 @@ public class LoadNoteBookFile implements Command {
 				ServiceFactory service = ServiceFactory.getInstance();
 				NoteBookService nbService = service.getNoteBookService();
 				try {
-					nbService.loadNoteBookFromFile(fileName);
+					if (nbService.loadNoteBookFromFile(fileName)) {
+						response.setErrorStatus(false);
+						response.setResultMessage(fileName + " is load success!");
+						return response;
+					}
 				} catch (ServiceException e) {
 					response.setErrorStatus(true);
-					response.setErrorMessage("Ooops.. make sure that you have wrote a file name, and try do it again");
+					response.setErrorMessage(e.getMessage());
 					return response;
 				}
-				response.setErrorStatus(false);
-				response.setResultMessage(fileName + " is load success!");
 				count++;
 				break;
 

@@ -1,5 +1,8 @@
 package epam.homework.task4.command.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import epam.homework.task4.bean.FindNotesRequest;
 import epam.homework.task4.bean.Request;
 import epam.homework.task4.bean.Response;
@@ -22,23 +25,24 @@ public class FindNotes implements Command {
 			throw new CommandException("Wrong request");
 		}
 
+		List<String> foundNotes = new ArrayList<>();
 		String keyWord = req.getKeyWords();
 		ServiceFactory service = ServiceFactory.getInstance();
 		NoteBookService nbService = service.getNoteBookService();
 
 		try {
 			for (Note found : nbService.findNotesByContent(keyWord)) {
-				System.out.println(found.getNote());
+				foundNotes.add(found.getNote());
 			}
+			response.setFoundNotes(foundNotes);
 			response.setErrorStatus(false);
 			response.setResultMessage("\nSearch completed success\n");
+			return response;
 		} catch (ServiceException e) {
 			response.setErrorStatus(true);
-			response.setErrorMessage("Sorry! But I think you haven't write a keyWords.. pls try again.\n");
+			response.setErrorMessage(e.getMessage());
 			return response;
 		}
-
-		return response;
 	}
 
 }

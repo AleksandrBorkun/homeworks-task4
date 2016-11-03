@@ -1,6 +1,5 @@
 package epam.homework.task4.command.impl;
 
-
 import epam.homework.task4.bean.AddNoteRequest;
 import epam.homework.task4.bean.Request;
 import epam.homework.task4.bean.Response;
@@ -22,25 +21,29 @@ public class AddNewNote implements Command {
 		} else {
 			throw new CommandException("Wrong request");
 		}
-		
+
 		String note = req.getNote();
 
 		ServiceFactory service = ServiceFactory.getInstance();
 		NoteBookService nbService = service.getNoteBookService();
-		
+
 		try {
-			nbService.addNote(note);
-			response.setErrorStatus(false);
-			response.setResultMessage("All OK!");
+			if (nbService.addNote(note)) {
+				response.setErrorStatus(false);
+				response.setResultMessage("All OK!");
+				return response;
+			} else {
+				response.setErrorStatus(true);
+				response.setErrorMessage("oooops something was wrong");
+				return response;
+			}
 
 		} catch (ServiceException e) {
 			response.setErrorStatus(true);
-			response.setErrorMessage("Oooops! I think you write an empty notes. Try again!");
+			response.setErrorMessage(e.getMessage());
 			return response;
-		}		
+		}
 
-
-		return response;
 	}
 
 }

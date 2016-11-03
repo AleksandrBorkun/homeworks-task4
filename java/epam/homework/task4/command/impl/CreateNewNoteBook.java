@@ -15,7 +15,7 @@ public class CreateNewNoteBook implements Command {
 
 		Response response = new Response();
 		CreateNewNoteBookRequest req;
-		
+
 		if (request instanceof CreateNewNoteBookRequest) {
 			req = (CreateNewNoteBookRequest) request;
 		} else {
@@ -24,18 +24,26 @@ public class CreateNewNoteBook implements Command {
 
 		ServiceFactory service = ServiceFactory.getInstance();
 		NoteBookService nbService = service.getNoteBookService();
-		nbService.createNewNoteBook();
-		try {
-			nbService.addNote("NoteBook is created");
-			response.setErrorStatus(false);
-			response.setResultMessage("NoteBook created success!");
-		} catch (ServiceException e) {
+
+		if (nbService.createNewNoteBook()) {
+
+			try {
+				nbService.addNote("NoteBook is created");
+				response.setErrorStatus(false);
+				response.setResultMessage("NoteBook created success!");
+				return response;
+			} catch (ServiceException e) {
+				response.setErrorStatus(true);
+				response.setErrorMessage(e.getMessage());
+				return response;
+			}
+
+		} else {
 			response.setErrorStatus(true);
 			response.setErrorMessage("WooW!!! Somethings go wrong! Pls try again later...");
 			return response;
 		}
-		
-		return response;
+
 	}
 
 }

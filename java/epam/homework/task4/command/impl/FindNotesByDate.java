@@ -1,5 +1,8 @@
 package epam.homework.task4.command.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import epam.homework.task4.bean.FindNotesByDateRequest;
 import epam.homework.task4.bean.Request;
 import epam.homework.task4.bean.Response;
@@ -28,20 +31,23 @@ public class FindNotesByDate implements Command {
 		ServiceFactory service = ServiceFactory.getInstance();
 		NoteBookService nbService = service.getNoteBookService();
 
+		List<String> foundNotesbyDate = new ArrayList<>();
+
 		try {
 			for (Note search : nbService.findNotesByDate(dateKey)) {
-				System.out.println(search.getNote());
-
+				foundNotesbyDate.add(search.getNote());
 			}
+			response.setFoundNotesbyDate(foundNotesbyDate);
 			response.setErrorStatus(false);
 			response.setResultMessage("\nSearch by date complete success\n");
+			return response;
 		} catch (ServiceException e) {
 			response.setErrorStatus(true);
-			response.setErrorMessage("Sorry! But I think you haven't write a date.. pls try again.\n");
+			response.setErrorMessage(e.getMessage());
+			return response;
 
 		}
 
-		return response;
 	}
 
 }

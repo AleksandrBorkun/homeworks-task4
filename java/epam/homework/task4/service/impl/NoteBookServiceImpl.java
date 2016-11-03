@@ -1,8 +1,6 @@
 package epam.homework.task4.service.impl;
 
-import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,7 +17,7 @@ import epam.homework.task4.service.exception.ServiceException;
 
 public class NoteBookServiceImpl implements NoteBookService {
 
-	public void addNote(String note) throws ServiceException {
+	public boolean addNote(String note) throws ServiceException {
 		// parameters validation
 		if (note == null || "".equals(note)) {
 			throw new ServiceException("Wrong parameter!");
@@ -29,14 +27,17 @@ public class NoteBookServiceImpl implements NoteBookService {
 
 		NoteBook noteBook = NoteBookProvider.getInstance().getNoteBook();
 		noteBook.add(newNote);
+		return true;
 	}
 
 	@Override
-	public void createNewNoteBook() {
+	public boolean createNewNoteBook() {
 
 		NoteBook noteBook = NoteBookProvider.getInstance().getNoteBook();
 
 		noteBook.clearNoteBook();
+
+		return true;
 
 	}
 
@@ -55,12 +56,11 @@ public class NoteBookServiceImpl implements NoteBookService {
 		NoteBook noteBook = NoteBookProvider.getInstance().getNoteBook();
 
 		foundNotes = noteBook.FindNotesByContent(keyWords);
-		if (foundNotes.isEmpty())
-			System.out.println("There is nothing found by yor request");
-		else
-			System.out.println("\nHere is found notes:\n");
-		return foundNotes;
-
+		if (foundNotes.isEmpty()) {
+			throw new ServiceException("There is nothing found by yor request");
+		} else {
+			return foundNotes;
+		}
 	}
 
 	@Override
@@ -80,17 +80,21 @@ public class NoteBookServiceImpl implements NoteBookService {
 
 		foundNotes = noteBook.FindNotesByDate(dateKey);
 		if (!foundNotes.isEmpty()) {
-			System.out.println("\nTake a result of search:\n");
+			return foundNotes;
 		} else {
-			System.out.println("\nSorry, but we found nothing by your date key\n");
+			throw new ServiceException("There is nothing found by yor request");
 		}
-		return foundNotes;
 
 	}
 
 	@Override
 
-	public void loadNoteBookFromFile(String loadFileName) throws ServiceException {
+	public boolean loadNoteBookFromFile(String loadFileName) throws ServiceException {
+
+		loadFileName = loadFileName.trim();
+		if (loadFileName == null || loadFileName.length() < 1) {
+			throw new ServiceException("ERROR! Wrong file name");
+		}
 
 		try {
 
@@ -111,27 +115,23 @@ public class NoteBookServiceImpl implements NoteBookService {
 
 			loadFile.close();
 
-		} catch (EOFException e) {
+			return true;
 
-		} catch (FileNotFoundException e) {
-
-			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
-
+		} catch (IOException | ClassNotFoundException e) {
+			throw new ServiceException(e.getMessage());
 		}
 
 	}
 
 	@Override
 
-	public void saveNoteBookToFile(String fileLocation) throws ServiceException {
+	public boolean saveNoteBookToFile(String fileLocation) throws ServiceException {
+
+		fileLocation = fileLocation.trim();
+
+		if (fileLocation == null || fileLocation.length() < 1) {
+			throw new ServiceException("Error!!!! Wrong File Name!");
+		}
 
 		try {
 
@@ -153,13 +153,10 @@ public class NoteBookServiceImpl implements NoteBookService {
 
 			saveFile.close();
 
-		} catch (FileNotFoundException e) {
-
-			e.printStackTrace();
-
+			return true;
 		} catch (IOException e) {
 
-			e.printStackTrace();
+			throw new ServiceException(e.getMessage());
 
 		}
 

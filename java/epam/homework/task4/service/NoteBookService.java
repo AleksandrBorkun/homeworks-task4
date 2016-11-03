@@ -7,16 +7,16 @@ import epam.homework.task4.bean.entity.Note;;
 
 public interface NoteBookService {
 
-	void addNote(String note) throws ServiceException;
+	boolean addNote(String note) throws ServiceException;
 
-	void createNewNoteBook();
+	boolean createNewNoteBook();
 
 	List<Note> findNotesByContent(String keyWords) throws ServiceException;
 
 	List<Note> findNotesByDate(String dateKey) throws ServiceException;
 
-	void loadNoteBookFromFile(String loadFileName) throws ServiceException;
+	boolean loadNoteBookFromFile(String loadFileName) throws ServiceException;
 
-	void saveNoteBookToFile(String saveFileName) throws ServiceException;
+	boolean saveNoteBookToFile(String saveFileName) throws ServiceException;
 
 }
